@@ -75,7 +75,7 @@ app.post("/dish", async (req, res) => {
               searchType: "image",
             },
           }
-        );
+        ); 
 
         if (response.data.items && response.data.items.length > 0) {
           const imageUrl = response.data.items[0].link;

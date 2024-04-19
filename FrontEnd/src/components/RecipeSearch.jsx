@@ -8,8 +8,10 @@ function RecipeSearch() {
   const [dishName, setDishName] = useState("");
   const [recipeData, setRecipeData] = useState(null);
   const [recipeImage, setRecipeImage] = useState("");
+  const [loading, setLoading] = useState(false); // State variable to track loading state
 
   const handleSearch = async () => {
+    setLoading(true); // Set loading to true when starting the fetch
     try {
       const response = await fetch("https://kitchen-kingdom-ai.onrender.com/", {
         method: "POST",
@@ -18,7 +20,7 @@ function RecipeSearch() {
         },
         body: JSON.stringify({ dish: dishName }),
       });
-      const responses1 = await fetch("https://kitchen-kingdom-ai.onrender.com/dish", {
+      const response1 = await fetch("https://kitchen-kingdom-ai.onrender.com/dish", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,26 +28,16 @@ function RecipeSearch() {
         body: JSON.stringify({ dish: dishName }),
       });
       const data = await response.json();
-      const data1 = await responses1.json();
-      
-      // Check if the necessary data exists
-      if (data && data1 && data.data && data1.imageUrl) {
-        localStorage.setItem("recipeDetails", JSON.stringify(data));
-        localStorage.setItem("recipeData", JSON.stringify(data1.imageUrl));
-        const storedRecipeData = localStorage.getItem("recipeData");
-        const parsedRecipeData = JSON.parse(storedRecipeData);
-  
-        console.log(parsedRecipeData);
-        setRecipeImage(data1.imageUrl);
-        setRecipeData(data);
-      } else {
-        console.error("Error: Invalid data format");
-      }
+      const data1 = await response1.json()
+      setRecipeData(data);
+      setRecipeImage(data1.imageUrl)
+      console.log(data);
+      setLoading(false); // Set loading to false after fetching data
     } catch (error) {
       console.error("Error fetching data:", error);
+      setLoading(false); // Set loading to false in case of error
     }
   };
-  
 
   return (
     <div style={styles.container}>
@@ -64,49 +56,78 @@ function RecipeSearch() {
             Search
           </button>
         </div>
-        {recipeData && (
-          <div>
-            <div className="card-container" style={styles.cardContainer}>
-              <div className="card" style={styles.card}>
-                <h3 style={styles.cardTitle}>Ingredients:</h3>
-                <ul style={styles.list}>
-                  {recipeData.data["Ingredients:"].map((ingredient, index) => (
-                    <li key={index}>{ingredient}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="card" style={styles.card}>
-                <h3 style={styles.cardTitle}>Instructions:</h3>
-                <ul style={styles.list}>
-                  {recipeData.data["Instructions:"].map(
-                    (instruction, index) => (
-                      <li key={index}>{instruction}</li>
-                    )
-                  )}
-                </ul>
-              </div>
-              <div className="card" style={styles.card}>
-                <h3 style={styles.cardTitle}>Extra Add-Ons:</h3>
-                <ul style={styles.list}>
-                  {recipeData.data["Extra Add-Ons:"].map((addOn, index) => (
-                    <li key={index}>{addOn}</li>
-                  ))}
-                </ul>
-              </div>
-            </div> 
-              {/* Displaying Image */}
-            <img src={recipeImage} alt="Recipe" style={styles.recipeImage} />
-            <Center h="10vh">
-            </Center>
+        {loading ? (
+          // Apply the loading animation styles
+          <div style={styles.loadingContainer}>
+          {/* <div style={styles.loadingSpinner}></div> */}
+          <div style={styles.loadingText}>🍳 Please wait, your recipe is being prepared! 🍽️</div>
           </div>
+        ) : (
+          recipeData && (
+            <div>
+              <div className="card-container" style={styles.cardContainer}>
+                {recipeData.data["Ingredients:"] && (
+                  <div className="card" style={styles.card}>
+                    <h3 style={styles.cardTitle}>Ingredients:</h3>
+                    <ul style={styles.list}>
+                      {recipeData.data["Ingredients:"].map((ingredient, index) => (
+                        <li key={index}>{ingredient}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {recipeData.data["Instructions:"] && (
+                  <div className="card" style={styles.card}>
+                    <h3 style={styles.cardTitle}>Instructions:</h3>
+                    <ol style={styles.list}>
+                      {recipeData.data["Instructions:"].map((instruction, index) => (
+                        <li key={index}>{instruction}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+                {recipeData.data["Extra Add-Ons:"] && (
+                  <div className="card" style={styles.card}>
+                    <h3 style={styles.cardTitle}>Extra Add-Ons:</h3>
+                    <ul style={styles.list}>
+                      {recipeData.data["Extra Add-Ons:"].map((addOn, index) => (
+                        <li key={index}>{addOn}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+              <img
+                src={recipeImage}
+                alt="Recipe"
+                style={styles.recipeImage}
+              />
+              <Center h="10vh"></Center>
+            </div>
+          )
         )}
       </div>
-      {/* <Button>Save</Button> */}
     </div>
   );
+  
+  
 }
 
 const styles = {
+  loadingContainer: {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    textAlign: "center",
+    zIndex: "9999",
+  },
+  loadingText: {
+    fontSize: "24px",
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: "20px", // Add margin to separate from the loading spinner
+  },
   container: {
     maxWidth: "1500px",
     marginBottom: "10px",
@@ -115,12 +136,11 @@ const styles = {
     borderRadius: "10px",
     background: "#FFFFFF",
     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-    // height: "1000px",
-    // border: "1px solid green",
   },
   title: {
     textAlign: "center",
     fontSize: "36px",
+    marginTop: "30px",
     marginBottom: "30px",
     color: "gold",
     textShadow: "1px 1px 2px rgba(0, 0, 0, 0.1)",
@@ -132,11 +152,12 @@ const styles = {
     marginBottom: "30px",
   },
   recipeImage: {
-    width: "100%", // Set the width of the image to 100% of the container
+    width: "40%", // Set the width of the image to 100% of the container
     height: "auto", // Maintain aspect ratio
-    marginTop: "20px",
+    marginTop: "30px",
+    marginLeft: "30%",
     borderRadius: "10px",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.8)",
   },
   input: {
     width: "calc(90% - 100px)",
@@ -155,10 +176,9 @@ const styles = {
     transition: "background-color 0.3s ease",
   },
   cardContainer: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
+    display: "grid", 
+    gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
     gap: "20px",
-    border: "1px solid black",
   },
   card: {
     background: "#fff",
