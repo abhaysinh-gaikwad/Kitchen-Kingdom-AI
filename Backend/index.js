@@ -11,16 +11,19 @@ app.use(cors(), express.json());
 
 app.post("/", async (req, res) => {
   try {
-    const { dish } = req.body;
-    const prompt = `write the recipe for ${dish}.
+    const { ingredients } = req.body;
+    let prompt = `write the recipe for a dish using these ingredients:
 **Ingredients:**
-Provide the ingredients for ${dish}.
+${ingredients.map((ingredient) => `* ${ingredient}`).join("\n")}
+
+**Dish Name:**
+Please provide a suitable dish name. 
 
 **Instructions:**
-Then, provide the instructions to cook ${dish}.
+Provide the instructions to cook the dish using the provided ingredients.
 
 **Extra Add-Ons:**
-Finally, list any extra add-ons for ${dish}.`;
+List any extra add-ons for the dish.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -32,20 +35,25 @@ Finally, list any extra add-ons for ${dish}.`;
     let data = {};
     let currentSection = "";
 
+
     lines.forEach((line) => {
       if (line.startsWith("**")) {
-        currentSection = line.substring(2, line.length - 2).trim();
-        data[currentSection] = [];
+        if (line.startsWith("**Dish Name:")) {
+          data['Dish Name'] = line.substring(12).trim(); 
+        } else {
+          currentSection = line.substring(2, line.length - 2).trim();
+          data[currentSection] = [];
+        }
       } else if (line.startsWith("*")) {
         data[currentSection].push(line.substring(2).trim());
       } else if (currentSection === "Instructions:") {
         data[currentSection].push(line.trim());
       }
     });
-
+    
     console.log("Data:", data);
     res.send({
-      msg: "Here is the data",
+      msg: "Here is the recipe",
       data,
     });
   } catch (err) {
@@ -55,8 +63,7 @@ Finally, list any extra add-ons for ${dish}.`;
       err,
     });
   }
-});
-
+}); 
 
 app.post("/dish", async (req, res) => {
   try {

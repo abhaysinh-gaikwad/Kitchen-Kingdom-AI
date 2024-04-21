@@ -6,38 +6,46 @@ import { NavLink, Navigate } from "react-router-dom";
 
 function RecipeSearch() {
   const [dishName, setDishName] = useState("");
+  const [ingredients, setIngredients] = useState("");
   const [recipeData, setRecipeData] = useState(null);
   const [recipeImage, setRecipeImage] = useState("");
   const [loading, setLoading] = useState(false); // State variable to track loading state
 
   const handleSearch = async () => {
-    setLoading(true); // Set loading to true when starting the fetch
+    setLoading(true);
     try {
       const response = await fetch("https://kitchen-kingdom-ai.onrender.com/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ dish: dishName }),
+        body: JSON.stringify({ ingredients: ingredients.split(/[,\s]+/) }),
       });
-      const response1 = await fetch("https://kitchen-kingdom-ai.onrender.com/dish", {
+      const data = await response.json();
+      const dishName = data.data["Dish Name"];
+  
+      const response1 = await fetch("https://kitchen-kingdom-ai.onrender.com/dish", { // Changed endpoint to /dish
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ dish: dishName }),
+        body: JSON.stringify({ dish: dishName }), // Pass dish name in request body
       });
-      const data = await response.json();
-      const data1 = await response1.json()
+  
+      if (!response1.ok) {
+        throw new Error(`Failed to fetch image URL: ${response1.status} ${response1.statusText}`);
+      }
+  
+      const data1 = await response1.json();
       setRecipeData(data);
-      setRecipeImage(data1.imageUrl)
-      console.log(data);
-      setLoading(false); // Set loading to false after fetching data
+      setRecipeImage(data1.imageUrl);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-      setLoading(false); // Set loading to false in case of error
+      setLoading(false);
     }
   };
+  
 
   return (
     <div style={styles.container}>
@@ -45,15 +53,15 @@ function RecipeSearch() {
       <div>
         <h1 style={styles.title}>Cook What You Want With Kitchen-Kingdom-AI</h1>
         <div style={styles.formContainer}>
-          <input
+        <input
             type="text"
-            placeholder="Enter dish name"
-            value={dishName}
-            onChange={(e) => setDishName(e.target.value)}
+            placeholder="Enter ingredients (comma or space separated)"
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value)}
             style={styles.input}
           />
           <button onClick={handleSearch} style={styles.button}>
-            Search
+          Generate Recipe
           </button>
         </div>
         {loading ? (
@@ -65,6 +73,11 @@ function RecipeSearch() {
         ) : (
           recipeData && (
             <div>
+              {/* Display recipe name */}
+              <div style={styles.loadingTexts}>
+                  🍳 For you, our Kitchen-Kingdom-AI suggests this recipe! 🍽️
+                </div>
+              <h1 style={styles.title}>{`${recipeData.data["Dish Name"]} **`}</h1>
               <div className="card-container" style={styles.cardContainer}>
                 {recipeData.data["Ingredients:"] && (
                   <div className="card" style={styles.card}>
@@ -126,6 +139,14 @@ const styles = {
     fontSize: "24px",
     fontWeight: "bold",
     color: "#333",
+    // marginLeft: "25%",
+    marginBottom: "20px", // Add margin to separate from the loading spinner
+  },
+  loadingTexts: {
+    fontSize: "24px",
+    fontWeight: "bold",
+    color: "#333",
+    marginLeft: "25%",
     marginBottom: "20px", // Add margin to separate from the loading spinner
   },
   container: {
@@ -133,6 +154,7 @@ const styles = {
     marginBottom: "10px",
     margin: "0 auto",
     padding: "0px",
+    paddingBottom:"10px",
     borderRadius: "10px",
     background: "#FFFFFF",
     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",

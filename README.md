@@ -1,7 +1,5 @@
 # Kitchen-Kingdom-AI
 
-### Home Page
-![Home page image](placeholder)
 
 ## Introduction
 
@@ -11,65 +9,65 @@ Kitchen-Kingdom-AI is an innovative application that leverages artificial intell
 Fullstack
 
 ## Deployed App
-- Frontend: [Link to Frontend Deployment]
-- Backend: [Link to Backend Deployment]
+- Frontend: http:https://kitchen-kingdom-ai.vercel.app/
+- Backend: https://kitchen-kingdom-ai-q6fy.onrender.com
 
 ## Directory Structure
 ```bash
 Kitchen-Kingdom-AI/
 ├─ Backend/
-│ ├─ .env
-│ ├─ node_modules/
-│ ├─ index.js
-│ ├─ package.json
-│ └─ packagelock.json
-└─ Frontend/
-├─ dist/
-├─ node_modules/
-├─ public/
-├─ src/
-│ ├─ components/
-│ │ ├─ navbar.jsx
-│ │ ├─ privateroute.jsx
-│ │ ├─ recipedetailsmodal.jsx
-│ │ ├─ recipeeditmodal.jsx
-│ │ ├─ recipesearch.jsx
-│ │ ├─ spinner.jsx
-│ │ └─ uploadwidget.jsx
-│ ├─ pages/
-│ │ ├─ auth/
-│ │ │ ├─ forms/
-│ │ │ │ └─ authlayout.jsx
-│ │ └─ user/
-│ │ └─ userslice.js
-│ ├─ redux/
-│ │ └─ store.js
-│ ├─ styles/
-│ │ ├─ auth/
-│ │ │ └─ authlayout.css
-│ │ ├─ create-recipe.css
-│ │ ├─ home.css
-│ │ ├─ navbar.css
-│ │ └─ register.css
-│ ├─ .eslintrc.cjs
-│ ├─ .gitignore
-│ ├─ index.html
-│ ├─ package.json
-│ ├─ packagelock.json
-│ ├─ README.md
-│ └─ vite.config.js
-└─ .gitignore
+│   ├─ .env
+│   ├─ node_modules/
+│   ├─ server.js
+│   ├─ package.json
+│   └─ package-lock.json
+├─ Frontend/
+│   ├─ dist/
+│   ├─ node_modules/
+│   ├─ public/
+│   ├─ src/
+│   │   ├─ components/
+│   │   │   ├─ navbar.jsx
+│   │   │   ├─ privateroute.jsx
+│   │   │   ├─ recipedetailsmodal.jsx
+│   │   │   ├─ recipeeditmodal.jsx
+│   │   │   ├─ recipesearch.jsx
+│   │   │   ├─ spinner.jsx
+│   │   │   └─ uploadwidget.jsx
+│   │   ├─ pages/
+│   │   │   ├─ auth/
+│   │   │   │   ├─ forms/
+│   │   │   │   │   ├─ loginForm.jsx
+│   │   │   │   │   └─ registerForm.jsx
+│   │   │   │   └─ authLayout.jsx
+│   │   │   ├─ createRecipe.jsx
+│   │   │   ├─ myRecipes.jsx
+│   │   │   └─ savedRecipes.jsx
+│   │   ├─ redux/
+│   │   │   ├─ user/
+│   │   │   └─ store.js
+│   │   ├─ styles/
+│   │   │   ├─ authLayout.css
+│   │   │   ├─ create-recipe.css
+│   │   │   ├─ home.css
+│   │   │   ├─ navbar.css
+│   │   │   └─ register.css
+│   │   ├─ App.css
+│   │   ├─ App.jsx
+│   │   ├─ constants.js
+│   │   ├─ index.css
+│   │   └─ main.js
+│   ├─ .eslintrc.cjs
+│   ├─ .gitignore
+│   ├─ index.html
+│   ├─ package.json
+│   ├─ package-lock.json
+│   └─ vite.config.js
+├─ .gitignore
+└─ README.md
+
 ```
 
-
-## Video Walkthrough of the project
-Attach a very short video walkthrough of all of the features [ 1 - 3 minutes ]
-
-## Video Walkthrough of the codebase
-Attach a very short video walkthrough of the codebase [ 1 - 5 minutes ]
-
-## Features
-Features
 ## Features
 - **Recipe Generation:** Users can request recipes for various dishes by providing the dish name, and the application will generate detailed recipes, including ingredients, instructions, and additional add-ons.
 - **Save Recipe:** Users can save recipes to the database and view them later on the recipe page.
@@ -85,12 +83,10 @@ cd Backend
 npm install 
 npm run start
 ```
-
-
-## Usage
-
 ```bash
-
+cd FrontEnd
+npm install
+npm run dev
 ```
 
 
@@ -109,7 +105,5 @@ npm run start
 - **React:** JavaScript library for building user interfaces.
 
 
-
-## Upcoming Features 
 
 
